@@ -1,7 +1,6 @@
 package com.classe;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -31,6 +30,7 @@ public class Fenetre extends JFrame implements ActionListener {
 	private JTextField nb_coup = new JTextField(5);
 	private JPanel plateau = new JPanel();
 	private JButton ans = new JButton("Soumettre");
+	@SuppressWarnings("unused")
 	private String isMode;
 	private JLabel label1 = new JLabel("Devinez le nombre magique");
 	private JLabel label2 = new JLabel("Devinez le mot magique");
@@ -123,13 +123,6 @@ public class Fenetre extends JFrame implements ActionListener {
 		plateau.add(ans);
 
 	}
-
-	public static void main(String[] args) {
-
-		Fenetre fen = new Fenetre();
-
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
