@@ -24,29 +24,41 @@ public class Numbers extends Mode {
 	}
 
 	public void getInfo() {
-		labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste " + (this.cp_essai) + " essai(s)");
+		if (coupIllimite) {
+			labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste × essai(s)");				
+		} else {
+			labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste " + (this.cp_essai) + " essai(s)");
+		}
 	}
 
-	public void rand_val() {
+	public int rand_val() {
 		Random valeur = new Random();
-		this.nb_magic = 1 + valeur.nextInt(99);
+		return 1 + valeur.nextInt(99);
+	}
+	
+	public void setNB(int value) {
+		this.nb_magic = value;
 	}
 
 	public void start() {
 		// Scanner input=new Scanner (System.in);
-		if (this.coup_total >= this.coup_init && verif == true) {
+		if ((this.coup_total >= this.coup_init || this.coupIllimite == true) && verif == true) {
 			this.cp_essai--;
 			this.coup_init++;
-			labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste " + (this.cp_essai) + " essai(s)");
+			if (coupIllimite) {
+				labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste × essai(s)");				
+			} else {
+				labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste " + (this.cp_essai) + " essai(s)");
+			}
 			this.nb_chosen = value;
-			if (this.cp_essai == 0) {
-				labelReponse.setText("Vous avez perdu \n Le nombre magique était " + this.nb_magic);
-			} else if (this.nb_chosen > this.nb_magic) {
+			if (this.nb_chosen > this.nb_magic) {
 				labelReponse.setText("Trop grand");
 			} else if (this.nb_chosen < this.nb_magic) {
 				labelReponse.setText("Trop petit");
 			} else if (this.nb_chosen == this.nb_magic) {
 				labelReponse.setText("Bravo !!! Vous avez gagné");
+			} else if (this.cp_essai == 0) {
+				labelReponse.setText("Vous avez perdu \n Le nombre magique était " + this.nb_magic);
 			}
 		}
 	}
@@ -65,6 +77,7 @@ public class Numbers extends Mode {
 		this.coup_init = 1;
 		this.cp_essai = nbCoup;
 		this.coup_total = nbCoup;
+		this.coupIllimite = false;
 		this.rand_val();
 		this.getInfo();
 		verif = true;

@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
@@ -27,7 +28,9 @@ public class Fenetre extends JFrame implements ActionListener {
 	CardLayout cl = new CardLayout();
 	JPanel content = new JPanel();
 	// Liste des noms de nos conteneurs pour la pile de cartes
+	JPanel menu = new JPanel();
 	JPanel mode = new JPanel();
+	JPanel onlinePanel = new JPanel();
 	String[] listContent = { "CARD_1", "CARD_2", "CARD_3", "CARD_4", "CARD_5" };
 	private JButton goNB = new JButton("Nombre");
 	JButton goMot = new JButton("Mot");
@@ -35,6 +38,7 @@ public class Fenetre extends JFrame implements ActionListener {
 	JRadioButton fixed_chance = new JRadioButton("Coup maximum");
 	JButton play = new JButton("Jouer");
 	JTextField nb_coup = new JTextField(5);
+	JPasswordField nb_magique = new JPasswordField(5);
 	JPanel plateau = new JPanel();
 	JButton ans = new JButton("Soumettre");
 	JButton restart = new JButton("Restart");
@@ -44,13 +48,18 @@ public class Fenetre extends JFrame implements ActionListener {
 	JLabel labelInfo = new JLabel();
 	JLabel labelReponse = new JLabel();
 	JButton solo = new JButton("Solo");
-	JButton multi = new JButton("multi");
-	GridBagConstraints pos = new GridBagConstraints();
+	JLabel info_nb = new JLabel("Nombre magique");
+	JButton multi = new JButton("Multi");
+	JButton online = new JButton("Online");
+	
 	JTextField answer = new JTextField(20);
 	Numbers jeuNB = new Numbers(answer, labelReponse, labelInfo);
 	Mots jeuMots = new Mots();
+	JButton toMenu = new JButton("Menu");
+	JButton close = new JButton("Fermer");
+	JLabel error = new JLabel("Vous devez entrer un nombre");
 
-	public Fenetre() {
+	public void defFenetre() {
 
 		this.setTitle("Mot ou Nombre Magique");
 		this.setSize(650, 550);
@@ -59,26 +68,24 @@ public class Fenetre extends JFrame implements ActionListener {
 
 		JPanel boutonPane = new JPanel();
 
-		JButton toMenu = new JButton("Menu");
+		toMenu.addActionListener(this);
+		close.addActionListener(this);
 
-		toMenu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				cl.show(content, listContent[0]);
-			}
-		});
-
-		JPanel menu = this.defMenu();
+		this.defMenu();
 		this.defMode();
 		this.defPlateau();
+		this.defOnline();
 		JPanel network = this.defNetwork();
 
 		boutonPane.add(toMenu);
+		boutonPane.add(close);
 		// On définit le layout
 		content.setLayout(cl);
 		// On ajoute les cartes à la pile avec un nom pour les retrouver
 		content.add(menu, listContent[0]);
 		content.add(this.mode, listContent[1]);
 		content.add(network, listContent[2]);
+		content.add(this.onlinePanel, listContent[3]);
 		content.add(this.plateau, listContent[4]);
 
 		this.getContentPane().add(boutonPane, BorderLayout.SOUTH);
@@ -86,51 +93,23 @@ public class Fenetre extends JFrame implements ActionListener {
 		this.setVisible(true);
 	}
 
-	public JPanel defMenu() {
+	public void defMenu() {
 
-		JPanel menu = new JPanel();
 		menu.setBackground(Color.gray);
 		menu.setLayout(new GridBagLayout());
 		menu.setPreferredSize(new Dimension(650, 550));
 
-		GridBagConstraints pos = new GridBagConstraints();
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 0;
-		pos.gridy = 0;
-		pos.weightx = 10;
-		pos.weighty = 10;
-		pos.gridwidth = GridBagConstraints.REMAINDER;
-
-		JPanel pan_titre = new JPanel();
 		JLabel titre = new JLabel("LE NOM DU JEU");
-		pan_titre.add(titre);
-		menu.add(pan_titre, pos);
+		menu.add(titre, posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "CENTER"));
 
 		// Définition de l'action du bouton
 		this.goNB.addActionListener(this);
 		// Définition de l'action du bouton2
 		this.goMot.addActionListener(this);
 
-		pos.gridy = 1;
-		pos.gridx = 0;
-		pos.gridwidth = 1;
-		pos.weightx = 3;
-		pos.weighty = 10;
-		pos.anchor = GridBagConstraints.FIRST_LINE_END;
-		pos.insets = new Insets(0, 0, 0, 5);
+		menu.add(goNB, posElement(0, 1, 1, 1, 3, 10, "", true, "FIRST_LINE_END", true, 0, 0, 0, 10));
 
-		menu.add(goNB, pos);
-
-		pos.gridx = 1;
-		pos.weightx = 3;
-		pos.weighty = 10;
-		pos.gridwidth = GridBagConstraints.RELATIVE;
-		pos.anchor = GridBagConstraints.FIRST_LINE_START;
-
-		menu.add(goMot, pos);
-
-		return menu;
+		menu.add(goMot, posElement(1, 1, 1, 1, 3, 10, "REMAINDER", true, "FIRST_LINE_START"));
 
 	}
 
@@ -138,8 +117,6 @@ public class Fenetre extends JFrame implements ActionListener {
 		this.mode.setBackground(Color.red);
 		mode.setLayout(new GridBagLayout());
 		mode.setPreferredSize(new Dimension(650, 550));
-
-		GridBagConstraints pos = new GridBagConstraints();
 
 		this.play.addActionListener(this);
 
@@ -153,49 +130,16 @@ public class Fenetre extends JFrame implements ActionListener {
 		this.fixed_chance.addActionListener(this);
 
 		this.nb_coup.setVisible(false);
+		this.nb_magique.setVisible(false);
+		info_nb.setVisible(false);
+		info_nb.setForeground(Color.black);
+		this.mode.add(nb_magique, posElement(1, 2, 1, 1, 10, 10, "REMAINDER", true, "FIRST_LINE_START"));
+		this.mode.add(info_nb, posElement(0, 2, 1, 1, 10, 10, "", true, "FIRST_LINE_END", true, 0, 0, 0, 10));
 
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 0;
-		pos.gridy = 0;
-		pos.weightx = 10;
-		pos.weighty = 10;
-		pos.insets = new Insets(0, 0, 0, 10);
-		pos.anchor = GridBagConstraints.LAST_LINE_END;
-		this.mode.add(this.infinite_chance, pos);
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 1;
-		pos.gridy = 0;
-		pos.weightx = 10;
-		pos.weighty = 10;
-		pos.anchor = GridBagConstraints.LAST_LINE_START;
-		pos.gridwidth = GridBagConstraints.REMAINDER;
-		this.mode.add(this.fixed_chance, pos);
-		JPanel coup_pan = new JPanel();
-		coup_pan.add(nb_coup);
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 1;
-		pos.gridy = 1;
-		pos.weightx = 10;
-		pos.weighty = 2;
-		pos.insets = new Insets(10, 0, 0, 0);
-		pos.anchor = GridBagConstraints.FIRST_LINE_START;
-		pos.gridwidth = GridBagConstraints.REMAINDER;
-		this.mode.add(coup_pan, pos);
-		JPanel play_pan = new JPanel();
-		play_pan.add(play);
-		play_pan.setBackground(Color.red);
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 0;
-		pos.gridy = 2;
-		pos.weightx = 10;
-		pos.weighty = 20;
-		pos.anchor = GridBagConstraints.CENTER;
-		pos.gridwidth = GridBagConstraints.REMAINDER;
-		this.mode.add(play_pan, pos);
+		this.mode.add(this.infinite_chance, posElement(0, 0, 1, 1, 10, 10, "", false, "", true, 0, 0, 0, 10));
+		this.mode.add(this.fixed_chance, posElement(1, 0, 1, 1, 10, 10, "REMAINDER", false, ""));
+		this.mode.add(nb_coup, posElement(1, 1, 1, 1, 10, 10, "REMAINDER", true, "PAGE_START", true, 10, 0, 0, 0));
+		this.mode.add(play, posElement(0, 3, 1, 1, 10, 10, "REMAINDER", true, "CENTER"));
 
 	}
 
@@ -208,46 +152,11 @@ public class Fenetre extends JFrame implements ActionListener {
 		restart.addActionListener(this);
 		answer.addActionListener(this);
 
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 0;
-		pos.gridy = 0;
-		pos.weightx = 10;
-		pos.weighty = 10;
-		pos.gridwidth = GridBagConstraints.REMAINDER;
-		plateau.add(labelInfo, pos);
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 0;
-		pos.gridy = 2;
-		pos.weightx = 10;
-		pos.weighty = 10;
-		pos.gridwidth = GridBagConstraints.REMAINDER;
-		plateau.add(answer, pos);
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 0;
-		pos.gridy = 3;
-		pos.weightx = 10;
-		pos.weighty = 10;
-		pos.anchor = GridBagConstraints.PAGE_START;
-		plateau.add(ans, pos);
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 1;
-		pos.gridy = 3;
-		pos.weightx = 10;
-		pos.weighty = 10;
-		pos.gridwidth = GridBagConstraints.REMAINDER;
-		plateau.add(restart, pos);
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 0;
-		pos.gridy = 4;
-		pos.weightx = 10;
-		pos.weighty = 10;
-		pos.gridwidth = GridBagConstraints.REMAINDER;
-		plateau.add(labelReponse, pos);
+		plateau.add(labelInfo, posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "PAGE_END"));
+		plateau.add(answer, posElement(0, 2, 1, 1, 10, 10, "REMAINDER"));
+		plateau.add(ans, posElement(0, 4, 1, 1, 10, 20, "", true, "FIRST_LINE_END", true, 0, 0, 0, 10));
+		plateau.add(restart, posElement(1, 4, 1, 1, 10, 20, "REMAINDER", true, "FIRST_LINE_START"));
+		plateau.add(labelReponse, posElement(0, 3, 1, 1, 10, 10, "REMAINDER", true, "PAGE_START"));
 
 	}
 
@@ -257,83 +166,143 @@ public class Fenetre extends JFrame implements ActionListener {
 		network.setLayout(new GridBagLayout());
 		network.setPreferredSize(new Dimension(650, 550));
 
-		GridBagConstraints pos = new GridBagConstraints();
-		pos.gridheight = 1;
-		pos.gridwidth = 1;
-		pos.gridx = 0;
-		pos.gridy = 0;
-		pos.weightx = 10;
-		pos.weighty = 10;
-		pos.gridwidth = GridBagConstraints.REMAINDER;
-
-		JPanel text_pan = new JPanel();
 		JLabel text = new JLabel("Mode de jeu :");
-		text_pan.add(text);
-		network.add(text_pan, pos);
+		network.add(text, posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "CENTER"));
 
 		solo.addActionListener(this);
 		multi.addActionListener(this);
+		online.addActionListener(this);
 
-		pos.gridx = 0;
-		pos.gridy = 1;
-		pos.weightx = 5;
-		pos.gridwidth = 1;
-		pos.weighty = 10;
-		pos.anchor = GridBagConstraints.FIRST_LINE_END;
-		pos.insets = new Insets(0, 0, 0, 5);
-		network.add(solo, pos);
-
-		pos.gridx = 1;
-		pos.gridy = 1;
-		pos.weightx = 5;
-		pos.weighty = 10;
-		pos.anchor = GridBagConstraints.FIRST_LINE_START;
-		pos.gridwidth = GridBagConstraints.RELATIVE;
-		network.add(multi, pos);
+		network.add(solo, posElement(0, 1, 1, 1, 55, 10, "", true, "FIRST_LINE_END"));
+		network.add(multi, posElement(1, 1, 1, 1, 5, 10, "", true, "PAGE_START"));
+		network.add(online, posElement(2, 1, 1, 1, 55, 10, "REMAINDER", true, "FIRST_LINE_START"));
 
 		return network;
+	}
+
+	private void defOnline() {
+		
+	}
+	
+	private GridBagConstraints posElement(int posX, int posY, int gridHeight, int gridWidth, int WeightX, int WeightY,
+			String EndLine, boolean Anchor, String posAnchor, boolean Inset, int InsetTop, int InsetLeft,
+			int InsetBottom, int InsetRight) {
+
+		GridBagConstraints pos = new GridBagConstraints();
+		pos.gridx = posX;
+		pos.gridy = posY;
+		pos.gridheight = gridHeight;
+		pos.gridwidth = gridWidth;
+		pos.weightx = WeightX;
+		pos.weighty = WeightY;
+		switch (EndLine) {
+		case "REMAINDER":
+			pos.gridwidth = GridBagConstraints.REMAINDER;
+			break;
+		
+		case "RELATIVE":
+			pos.gridwidth = GridBagConstraints.RELATIVE;
+			break;
+			
+		default:
+			break;
+		}
+		if (Anchor) {
+			switch (posAnchor) {
+			case "PAGE_START":
+				pos.anchor = GridBagConstraints.PAGE_START;
+				break;
+
+			case "PAGE_END":
+				pos.anchor = GridBagConstraints.PAGE_END;
+				break;
+
+			case "FIRST_LINE_START":
+				pos.anchor = GridBagConstraints.FIRST_LINE_START;
+				break;
+
+			case "FIRST_LINE_END":
+				pos.anchor = GridBagConstraints.FIRST_LINE_END;
+				break;
+
+			case "LINE_START":
+				pos.anchor = GridBagConstraints.LINE_START;
+				break;
+
+			case "LINE_END":
+				pos.anchor = GridBagConstraints.LINE_END;
+				break;
+
+			case "LAST_LINE_START":
+				pos.anchor = GridBagConstraints.LAST_LINE_START;
+				break;
+
+			case "LAST_LINE_END":
+				pos.anchor = GridBagConstraints.LAST_LINE_END;
+				break;
+
+			case "CENTER":
+				pos.anchor = GridBagConstraints.CENTER;
+				break;
+
+			default:
+				break;
+			}
+			if (Inset) {
+				pos.insets = new Insets(InsetTop, InsetLeft, InsetBottom, InsetRight);
+			}
+
+		}
+		return pos;
+	}
+
+	private GridBagConstraints posElement(int posX, int posY, int gridHeight, int gridWidth, int WeightX, int WeightY,
+			String EndLine, boolean Anchor, String posAnchor) {
+		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY, EndLine, Anchor, posAnchor, false, 0, 0,
+				0, 0);
+	}
+
+	private GridBagConstraints posElement(int posX, int posY, int gridHeight, int gridWidth, int WeightX, int WeightY,
+			String EndLine) {
+		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY, EndLine, false, "");
+	}
+	
+	private GridBagConstraints posElement(int posX, int posY, int gridHeight, int gridWidth, int WeightX, int WeightY) {
+		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY, "");
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == goMot) {
-			cl.show(content, listContent[2]);
-			isMode = "mot";
-			plateau.remove(label1);
-			pos.gridheight = 1;
-			pos.gridwidth = 1;
-			pos.gridx = 0;
-			pos.gridy = 0;
-			pos.weightx = 10;
-			pos.weighty = 10;
-			pos.anchor = GridBagConstraints.PAGE_END;
-			pos.gridwidth = GridBagConstraints.REMAINDER;
-			plateau.add(label2, pos);
-			plateau.validate();
+			
 		} else if (source == goNB) {
 			cl.show(content, listContent[2]);
 			jeuNB.rand_val();
 			isMode = "nb";
 			plateau.remove(label2);
-			pos.gridheight = 1;
-			pos.gridwidth = 1;
-			pos.gridx = 0;
-			pos.gridy = 1;
-			pos.weightx = 10;
-			pos.weighty = 10;
-			pos.anchor = GridBagConstraints.PAGE_END;
-			pos.gridwidth = GridBagConstraints.REMAINDER;
-			plateau.add(label1, pos);
+			plateau.add(label1, posElement(0, 1, 1, 1, 10, 10, "REMAINDER", true, "PAGE_END"));
 			plateau.validate();
 		} else if (source == play) {
-			cl.show(content, listContent[4]);
+			try {
 			if (nb_coup.isVisible()) {
-				jeuNB.setCoup(Integer.parseInt(nb_coup.getText()));
+					jeuNB.setCoup(Integer.parseInt(nb_coup.getText()));
 			} else {
-				jeuNB.setCoup(1000);
+				jeuNB.setIllimite();
+			}
+			if (nb_magique.isVisible()) {
+				jeuNB.setNB(Integer.parseInt(new String(nb_magique.getPassword())));
+			} else {
+				jeuNB.setNB(jeuNB.rand_val());
 			}
 			this.jeuNB.getInfo();
+			nb_coup.setText("");
+			nb_magique.setText("");
 			plateau.validate();
+			cl.show(content, listContent[4]);
+			} catch (Exception e2) {
+				mode.add(error, posElement(1, 1, 1, 1, 10, 10));
+				mode.validate();
+			}
 
 		} else if (source == fixed_chance) {
 			if (this.fixed_chance.isSelected()) {
@@ -347,16 +316,32 @@ public class Fenetre extends JFrame implements ActionListener {
 			}
 		} else if (source == solo) {
 			cl.show(content, listContent[1]);
+			this.nb_magique.setVisible(false);
+			this.info_nb.setVisible(false);
+			this.mode.validate();
 		} else if (source == multi) {
 			cl.show(content, listContent[1]);
+			this.nb_magique.setVisible(true);
+			this.info_nb.setVisible(true);
+			this.mode.validate();
 		} else if (source == ans) {
 			jeuNB.sendValue();
 			plateau.validate();
 			jeuNB.start();
+			answer.setText("");
 			plateau.validate();
 		} else if (source == restart) {
 			jeuNB.restart();
 			plateau.validate();
+			error.setVisible(false);
+			mode.validate();
+			cl.show(content, listContent[1]);
+		} else if (source == toMenu) {
+			cl.show(content, listContent[0]);
+		} else if (source == close) {
+			this.dispose();
+		} else if (source == online) {
+			cl.show(content, listContent[3]);
 		}
 	}
 }

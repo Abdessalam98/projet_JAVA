@@ -1,7 +1,8 @@
+package com.classe;
 import java.util.*;
 
 
-public class Mots {
+public class Mots extends Mode {
 	String [] words = {"avion","image","piano","enveloppe","etiquette","difference","discussion",
 			"ecole","journal","famille","maison","tempete","bouton","chat","tortue","souvenir","cadeau","professeur","roue","chapeau"};
 	String [] alphabets ={"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t",
