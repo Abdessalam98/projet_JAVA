@@ -5,9 +5,9 @@
 - Abdessamad Douhi
 - Abdessalam Benharira
 - Branis Lamrani
-**Chef de projet:**
+## Chef de projet:
 - Branis Lamrani
-**Encadré par:**
+## Encadré par:
 - Juliana Bod
 - Urbain Nzouda
 - Gauthier De Backer

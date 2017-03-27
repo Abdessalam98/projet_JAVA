@@ -11,26 +11,13 @@ public class Numbers extends Mode {
 	int coup_init = 1;
 	int nb_chosen;
 	int value;
-	JTextField answer;
-	JLabel labelReponse;
-	JLabel labelInfo;
 	boolean verif = true;
 
 	public Numbers(JTextField answer, JLabel labelReponse, JLabel labelInfo) {
+		super(answer, labelReponse, labelInfo);
 		// TODO Auto-generated constructor stub
-		this.answer = answer;
-		this.labelInfo = labelInfo;
-		this.labelReponse = labelReponse;
 	}
-
-	public void getInfo() {
-		if (coupIllimite) {
-			labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste × essai(s)");				
-		} else {
-			labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste " + (this.cp_essai) + " essai(s)");
-		}
-	}
-
+	
 	public int rand_val() {
 		Random valeur = new Random();
 		return 1 + valeur.nextInt(99);
