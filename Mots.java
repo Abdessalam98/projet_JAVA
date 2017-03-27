@@ -1,7 +1,18 @@
 package com.classe;
 import java.util.*;
 
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
+/**
+ * 
+ * Nom du fichier: Mots.java 
+ * Date: 27 mars 2017
+ * Membres du Projet:
+ * Laurent Panek, Abdessamad Douhi
+ * Abdessalam Benharira, Branis Lamrani
+ * Chef de Projet: Branis Lamrani
+ */
 public class Mots extends Mode {
 	String [] words = {"avion","image","piano","enveloppe","etiquette","difference","discussion",
 			"ecole","journal","famille","maison","tempete","bouton","chat","tortue","souvenir","cadeau","professeur","roue","chapeau"};
@@ -12,16 +23,34 @@ public class Mots extends Mode {
 	int coups_total=10;
 	int coup_init=1;
 	int cp_essai=coups_total;
+	JTextField answer;
+	JLabel labelReponse;
+	JLabel labelInfo;
+	String value;
 	String letter_rand;
 	String motADeviner;
 	String[] characters;
 	String word_chosen;
+	boolean verif = true;
 	
+	public Mots(JTextField answer, JLabel labelReponse, JLabel labelInfo){
+		super(answer, labelReponse, labelInfo);
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * Cette méthode permet de choisir un mot à partir d'une liste
+	 */
 	public void rand_word(){
 		 Random word = new Random();
 		 int select = word.nextInt(words.length);
 		 this.motADeviner=words[select];
 		 this.length=(this.motADeviner).length();
+	}
+	
+	
+	public void setMot(String value) {
+		this.motADeviner = value;
 	}
 	
 	/*public void rand_letter(){
@@ -32,10 +61,16 @@ public class Mots extends Mode {
 	}
 	}*/
 	
+	
+	/**
+	 * Cette méthode permet de diviser le mot en plusieurs lettres
+	 */
 	public void split_chars(){
 		this.characters=(this.motADeviner).split("");
 	}
-		
+	/**
+	 * Cette méthode permet de mettre en désordre les lettes du mot
+	 */
 	public void unorder_split (){
 		String temp;
 		for(int i=(this.length)-1;i>0;i--){
@@ -46,6 +81,10 @@ public class Mots extends Mode {
 		}
 		
 	}
+	/**
+	 * Cette méthode permet de créér un arraylist et d'y stocker les lettres du mot
+	 * en désordre en ajoutant des lettres intruses de l'alphabet
+	 */
 	public void add_array () {		
 		ArrayList<String> new_words =new ArrayList<String>();
 		
@@ -64,43 +103,47 @@ public class Mots extends Mode {
 		
 	}
 	
-	
-	public void display_chars(){
-
-	}
-	
-	
-	public void display_word(){
-		
-	}
+	/**
+	 * Cette méthode permet de commencer le jeu
+	 */
 	public void start(){
-		Scanner value =new Scanner(System.in);
 		for(this.coup_init=1;this.coups_total>=this.coup_init;this.coup_init++){
 			this.cp_essai--;
-		System.out.println("Essai n� "+this.coup_init+"\nIl vous reste "+(this.cp_essai)+" essai(s)");
+		System.out.println("Essai n° "+this.coup_init+"\nIl vous reste "+(this.cp_essai)+" essai(s)");
 		System.out.println("Entrez le mot");
-		this.word_chosen=value.nextLine();
 		if (this.coups_total<=this.coup_init){
-			System.out.println("Vous avez perdu \nLe mot magique �tait "+this.motADeviner);
+			System.out.println("Vous avez perdu \nLe mot magique était "+this.motADeviner);
 		}else{
 		if (this.word_chosen.equals(this.motADeviner)){
-				System.out.println("Bravo !!! Vous avez gagn�");
-				break;}
+				System.out.println("Bravo !!! Vous avez gagné");
+				break;
+				}
 		}
 		}
 	}
+	public void sendValue() {
+		try {
+			if((answer.getText()).matches("^[A-Za-z, ]++$")){
+				value = answer.getText();
+			}else{
+				labelInfo.setText("/!\\ Erreur /!\\ Votre réponse est incorrecte !");
+				verif = false;
+			}
+		} catch (Exception e) {
+			labelInfo.setText("/!\\ Erreur /!\\ Votre réponse est incorrecte !");
+			verif = false;
+		}
 
-
-
-	public static void main(String[] args) {
-		Mots jeu= new Mots();
-		jeu.rand_word();
-		jeu.display_word();
-		jeu.split_chars();
-		jeu.unorder_split();
-		jeu.add_array();
-		jeu.start();
-		jeu.display_chars();
+	}
+	public void restart() {
+		this.coup_init = 1;
+		this.cp_essai = nbCoup;
+		this.coup_total = nbCoup;
+		this.coupIllimite = false;
+		this.rand_word();
+		this.getInfo();
+		verif = true;
+		labelReponse.setText("");
 	}
 
 }
