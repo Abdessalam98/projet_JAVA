@@ -44,7 +44,6 @@ public class Fenetre extends JFrame implements ActionListener {
 	JButton restart = new JButton("Restart");
 	String isMode;
 	JLabel label1 = new JLabel("Devinez le nombre magique");
-	JLabel label2 = new JLabel("Devinez le mot magique");
 	JLabel labelInfo = new JLabel();
 	JLabel labelReponse = new JLabel();
 	JButton solo = new JButton("Solo");
@@ -274,27 +273,73 @@ public class Fenetre extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == goMot) {
-			
+			cl.show(content, listContent[2]);
+			isMode = "mot";
+			label1.setText("Devinez le mot magique");
+			plateau.validate();
 		} else if (source == goNB) {
 			cl.show(content, listContent[2]);
-			jeuNB.rand_val();
 			isMode = "nb";
-			plateau.remove(label2);
-			plateau.add(label1, posElement(0, 1, 1, 1, 10, 10, "REMAINDER", true, "PAGE_END"));
+			label1.setText("Devinez le nombre magique");
 			plateau.validate();
 		} else if (source == play) {
 			try {
 			if (nb_coup.isVisible()) {
+				switch (isMode) {
+				case "nb":
 					jeuNB.setCoup(Integer.parseInt(nb_coup.getText()));
+					break;
+				case "mot":
+					jeuMots.setCoup(Integer.parseInt(nb_coup.getText()));
+					break;
+				default:
+					break;
+				}
 			} else {
-				jeuNB.setIllimite();
+				switch (isMode) {
+				case "nb":
+					jeuNB.setIllimite();
+					break;
+				case "mot":
+					jeuMots.setIllimite();
+					break;
+				default:
+					break;
+				}
 			}
 			if (nb_magique.isVisible()) {
-				jeuNB.setNB(Integer.parseInt(new String(nb_magique.getPassword())));
+				switch (isMode) {
+				case "nb":
+					jeuNB.setNB(Integer.parseInt(new String(nb_magique.getPassword())));
+					break;
+				case "mot":
+					jeuMots.setMot(new String(nb_magique.getPassword()));
+					break;
+				default:
+					break;
+				}
 			} else {
-				jeuNB.setNB(jeuNB.rand_val());
+				switch (isMode) {
+				case "nb":
+					jeuNB.setNB(jeuNB.rand_val());
+					break;
+				case "mot":
+					jeuMots.setMot(jeuMots.rand_word());
+					break;
+				default:
+					break;
+				}
 			}
-			this.jeuNB.getInfo();
+			switch (isMode) {
+			case "nb":
+				jeuNB.getInfo();
+				break;
+			case "mot":
+				jeuMots.getInfo();
+				break;
+			default:
+				break;
+			}
 			nb_coup.setText("");
 			nb_magique.setText("");
 			plateau.validate();
@@ -325,13 +370,31 @@ public class Fenetre extends JFrame implements ActionListener {
 			this.info_nb.setVisible(true);
 			this.mode.validate();
 		} else if (source == ans) {
-			jeuNB.sendValue();
-			plateau.validate();
-			jeuNB.start();
+			switch (isMode) {
+			case "nb":
+				jeuNB.sendValue();
+				jeuNB.start();
+				break;
+			case "mot":
+				jeuMots.sendWord();
+				jeuMots.start();
+				break;
+			default:
+				break;
+			}
 			answer.setText("");
 			plateau.validate();
 		} else if (source == restart) {
-			jeuNB.restart();
+			switch (isMode) {
+			case "nb":
+				jeuNB.restart();
+				break;
+			case "mot":
+				jeuMots.restart();
+				break;
+			default:
+				break;
+			}
 			plateau.validate();
 			error.setVisible(false);
 			mode.validate();
