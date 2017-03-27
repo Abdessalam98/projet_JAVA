@@ -6,7 +6,7 @@
 - Abdessalam Benharira
 - Branis Lamrani
 **Chef de projet:**
-## Branis Lamrani
+- Branis Lamrani
 **Encadré par:**
 - Juliana Bod
 - Urbain Nzouda
