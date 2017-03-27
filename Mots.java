@@ -1,4 +1,5 @@
 package com.classe;
+
 import java.util.*;
 
 import javax.swing.JLabel;
@@ -6,135 +7,136 @@ import javax.swing.JTextField;
 
 /**
  * 
- * Nom du fichier: Mots.java 
- * Date: 27 mars 2017
- * Membres du Projet:
- * Laurent Panek, Abdessamad Douhi
- * Abdessalam Benharira, Branis Lamrani
- * Chef de Projet: Branis Lamrani
+ * Nom du fichier: Mots.java Date: 27 mars 2017 Membres du Projet: Laurent
+ * Panek, Abdessamad Douhi Abdessalam Benharira, Branis Lamrani Chef de Projet:
+ * Branis Lamrani
  */
 public class Mots extends Mode {
-	String [] words = {"avion","image","piano","enveloppe","etiquette","difference","discussion",
-			"ecole","journal","famille","maison","tempete","bouton","chat","tortue","souvenir","cadeau","professeur","roue","chapeau"};
-	String [] alphabets ={"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t",
-			"u","v","w","x","y","z"};
-	int i=0;
+	String[] words = { "avion", "image", "piano", "enveloppe", "etiquette", "difference", "discussion", "ecole",
+			"journal", "famille", "maison", "tempete", "bouton", "chat", "tortue", "souvenir", "cadeau", "professeur",
+			"roue", "chapeau" };
+	String[] alphabets = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
+			"s", "t", "u", "v", "w", "x", "y", "z" };
+	int i = 0;
 	int length;
-	int coups_total=10;
-	int coup_init=1;
-	int cp_essai=coups_total;
-	JTextField answer;
-	JLabel labelReponse;
-	JLabel labelInfo;
-	String value;
+	int coups_total = 10;
+	int coup_init = 1;
+	int cp_essai = coups_total;
 	String letter_rand;
 	String motADeviner;
 	String[] characters;
 	String word_chosen;
+	JLabel labelIndice;
 	boolean verif = true;
-	
-	public Mots(JTextField answer, JLabel labelReponse, JLabel labelInfo){
+
+	public Mots(JTextField answer, JLabel labelReponse, JLabel labelInfo, JLabel labelIndice) {
 		super(answer, labelReponse, labelInfo);
+		this.labelIndice = labelIndice;
 		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * Cette méthode permet de choisir un mot à partir d'une liste
 	 */
-	public void rand_word(){
-		 Random word = new Random();
-		 int select = word.nextInt(words.length);
-		 this.motADeviner=words[select];
-		 this.length=(this.motADeviner).length();
+	public String rand_word() {
+		Random word = new Random();
+		int select = word.nextInt(words.length);
+		return words[select];
 	}
-	
-	
+
 	public void setMot(String value) {
-		this.motADeviner = value;
+		if ((answer.getText()).matches("^[A-Za-z, ]++$")) {
+			this.motADeviner = value;
+			this.length = motADeviner.length();
+		}
 	}
-	
-	/*public void rand_letter(){
-		for(int i=0; i<10;i++){
-		 Random letter = new Random();
-		 int select = letter.nextInt(alphabets.length);
-		 this.letter_rand=alphabets[select];
-	}
-	}*/
-	
-	
+
 	/**
 	 * Cette méthode permet de diviser le mot en plusieurs lettres
 	 */
-	public void split_chars(){
-		this.characters=(this.motADeviner).split("");
+	private void split_chars() {
+		Random letter = new Random();
+		int select = letter.nextInt(alphabets.length);
+		this.letter_rand = alphabets[select];
+		this.motADeviner += this.letter_rand;
+		this.characters = (this.motADeviner).split("");
 	}
+
 	/**
 	 * Cette méthode permet de mettre en désordre les lettes du mot
 	 */
-	public void unorder_split (){
+	private void unorder_split() {
+		this.split_chars();
 		String temp;
-		for(int i=(this.length)-1;i>0;i--){
-	           int j = (int)(Math.random()*(i + 1));
-	            temp = this.characters[i];
-	            this.characters[i] =this.characters[j];
-	            this.characters[j] = temp;
-		}
-		
-	}
-	/**
-	 * Cette méthode permet de créér un arraylist et d'y stocker les lettres du mot
-	 * en désordre en ajoutant des lettres intruses de l'alphabet
-	 */
-	public void add_array () {		
-		ArrayList<String> new_words =new ArrayList<String>();
-		
-		for(int i=0; i<1;i++){
-			 Random letter = new Random();
-			 int select = letter.nextInt(alphabets.length);
-			 this.letter_rand=alphabets[select];
-			 new_words.add(this.letter_rand);
-			 for (int z=0;z<this.length;z+=1){
-					new_words.add(this.characters[z]);
-				}
-		}
-		System.out.println("Indices");
-		String list=Arrays.toString(new_words.toArray()).replace("[", "").replace("]", "");
-		System.out.println(list);
-		
-	}
-	
-	/**
-	 * Cette méthode permet de commencer le jeu
-	 */
-	public void start(){
-		for(this.coup_init=1;this.coups_total>=this.coup_init;this.coup_init++){
-			this.cp_essai--;
-		System.out.println("Essai n° "+this.coup_init+"\nIl vous reste "+(this.cp_essai)+" essai(s)");
-		System.out.println("Entrez le mot");
-		if (this.coups_total<=this.coup_init){
-			System.out.println("Vous avez perdu \nLe mot magique était "+this.motADeviner);
-		}else{
-		if (this.word_chosen.equals(this.motADeviner)){
-				System.out.println("Bravo !!! Vous avez gagné");
-				break;
-				}
-		}
-		}
-	}
-	public void sendValue() {
-		try {
-			if((answer.getText()).matches("^[A-Za-z, ]++$")){
-				value = answer.getText();
-			}else{
-				labelInfo.setText("/!\\ Erreur /!\\ Votre réponse est incorrecte !");
-				verif = false;
-			}
-		} catch (Exception e) {
-			labelInfo.setText("/!\\ Erreur /!\\ Votre réponse est incorrecte !");
-			verif = false;
+		for (int i = this.length; i > 0; i--) {
+			int j = (int) (Math.random() * (i + 1));
+			temp = this.characters[i];
+			this.characters[i] = this.characters[j];
+			this.characters[j] = temp;
 		}
 
 	}
+
+	/**
+	 * Cette méthode permet de créér un arraylist et d'y stocker les lettres
+	 * du mot en désordre en ajoutant des lettres intruses de l'alphabet
+	 */
+	private void add_array() {
+		this.unorder_split();
+		ArrayList<String> new_words = new ArrayList<String>();
+
+		for (int i = 0; i < 1; i++) {
+			for (int z = 0; z < this.length + 1; z += 1) {
+				new_words.add(this.characters[z]);
+			}
+		}
+		String list = Arrays.toString(new_words.toArray()).replace("[", "").replace("]", "");
+		this.labelIndice.setText("Indices : " + list);
+
+	}
+
+	/**
+	 * Cette méthode permet de commencer le jeu
+	 */
+	public void start() {
+		if ((this.coup_total >= this.coup_init || this.coupIllimite == true) && verif == true) {
+			this.add_array();
+			this.cp_essai--;
+			this.coup_init++;
+			if (coupIllimite) {
+				labelInfo.setText("Essai n� " + this.coup_init + "\n Il vous reste \u221E essai(s)");
+			} else {
+				labelInfo.setText("Essai n� " + this.coup_init + "\n Il vous reste " + (this.cp_essai) + " essai(s)");
+			}
+			if (word_chosen.equals(this.motADeviner)) {
+				labelReponse.setText("Bravo !!! Vous avez gagn�");
+			} else if (this.cp_essai > 0) {
+				labelReponse.setText("Ce n'est pas le bon mot. R�essayer !");
+			} else if (this.cp_essai == 0) {
+				labelReponse.setText("Vous avez perdu \n Le mot magique �tait " + this.motADeviner);
+			}
+
+		}
+	}
+
+	public void sendValue() {
+		if ((answer.getText()).matches("^[A-Za-z, ]++$")) {
+			word_chosen = answer.getText();
+		} else {
+			labelInfo.setText("/!\\ Erreur /!\\ Votre r�ponse est incorrecte !");
+			verif = false;
+		}
+	}
+
+	public void getInfo() {
+		if (coupIllimite) {
+			labelInfo.setText("Essai n� " + this.coup_init + "\n Il vous reste \u221E essai(s)");
+		} else {
+			labelInfo.setText("Essai n� " + this.coup_init + "\n Il vous reste " + (this.cp_essai) + " essai(s)");
+		}
+		this.add_array();
+	}
+
 	public void restart() {
 		this.coup_init = 1;
 		this.cp_essai = nbCoup;

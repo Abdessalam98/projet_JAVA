@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -12,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,22 +40,24 @@ public class Fenetre extends JFrame implements ActionListener {
 	JRadioButton fixed_chance = new JRadioButton("Coup maximum");
 	JButton play = new JButton("Jouer");
 	JTextField nb_coup = new JTextField(5);
-	JPasswordField nb_magique = new JPasswordField(5);
+	JPasswordField nb_magique = new JPasswordField(10);
 	JPanel plateau = new JPanel();
 	JButton ans = new JButton("Soumettre");
 	JButton restart = new JButton("Restart");
 	String isMode;
-	JLabel label1 = new JLabel("Devinez le nombre magique");
+	JLabel label1 = new JLabel("");
 	JLabel labelInfo = new JLabel();
 	JLabel labelReponse = new JLabel();
+	JLabel labelIndice = new JLabel();
+
 	JButton solo = new JButton("Solo");
-	JLabel info_nb = new JLabel("Nombre magique");
+	JLabel info_val = new JLabel("");
 	JButton multi = new JButton("Multi");
 	JButton online = new JButton("Online");
-	
+
 	JTextField answer = new JTextField(20);
 	Numbers jeuNB = new Numbers(answer, labelReponse, labelInfo);
-	Mots jeuMots = new Mots();
+	Mots jeuMots = new Mots(answer, labelReponse, labelInfo, labelIndice);
 	JButton toMenu = new JButton("Menu");
 	JButton close = new JButton("Fermer");
 	JLabel error = new JLabel("Vous devez entrer un nombre");
@@ -81,20 +85,19 @@ public class Fenetre extends JFrame implements ActionListener {
 		// On définit le layout
 		content.setLayout(cl);
 		// On ajoute les cartes à la pile avec un nom pour les retrouver
-		content.add(menu, listContent[0]);
+		content.add(this.menu, listContent[0]);
 		content.add(this.mode, listContent[1]);
 		content.add(network, listContent[2]);
 		content.add(this.onlinePanel, listContent[3]);
 		content.add(this.plateau, listContent[4]);
 
-		this.getContentPane().add(boutonPane, BorderLayout.SOUTH);
-		this.getContentPane().add(content, BorderLayout.CENTER);
+		add(content, BorderLayout.CENTER);
+		add(boutonPane, BorderLayout.SOUTH);
 		this.setVisible(true);
 	}
 
-	public void defMenu() {
+	private void defMenu() {
 
-		menu.setBackground(Color.gray);
 		menu.setLayout(new GridBagLayout());
 		menu.setPreferredSize(new Dimension(650, 550));
 
@@ -112,7 +115,7 @@ public class Fenetre extends JFrame implements ActionListener {
 
 	}
 
-	public void defMode() {
+	private void defMode() {
 		this.mode.setBackground(Color.red);
 		mode.setLayout(new GridBagLayout());
 		mode.setPreferredSize(new Dimension(650, 550));
@@ -130,10 +133,10 @@ public class Fenetre extends JFrame implements ActionListener {
 
 		this.nb_coup.setVisible(false);
 		this.nb_magique.setVisible(false);
-		info_nb.setVisible(false);
-		info_nb.setForeground(Color.black);
+		info_val.setVisible(false);
+		info_val.setForeground(Color.black);
 		this.mode.add(nb_magique, posElement(1, 2, 1, 1, 10, 10, "REMAINDER", true, "FIRST_LINE_START"));
-		this.mode.add(info_nb, posElement(0, 2, 1, 1, 10, 10, "", true, "FIRST_LINE_END", true, 0, 0, 0, 10));
+		this.mode.add(info_val, posElement(0, 2, 1, 1, 10, 10, "", true, "FIRST_LINE_END", true, 0, 0, 0, 10));
 
 		this.mode.add(this.infinite_chance, posElement(0, 0, 1, 1, 10, 10, "", false, "", true, 0, 0, 0, 10));
 		this.mode.add(this.fixed_chance, posElement(1, 0, 1, 1, 10, 10, "REMAINDER", false, ""));
@@ -142,7 +145,7 @@ public class Fenetre extends JFrame implements ActionListener {
 
 	}
 
-	public void defPlateau() {
+	private void defPlateau() {
 		plateau.setBackground(Color.lightGray);
 		plateau.setLayout(new GridBagLayout());
 		plateau.setPreferredSize(new Dimension(650, 550));
@@ -152,14 +155,15 @@ public class Fenetre extends JFrame implements ActionListener {
 		answer.addActionListener(this);
 
 		plateau.add(labelInfo, posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "PAGE_END"));
-		plateau.add(answer, posElement(0, 2, 1, 1, 10, 10, "REMAINDER"));
-		plateau.add(ans, posElement(0, 4, 1, 1, 10, 20, "", true, "FIRST_LINE_END", true, 0, 0, 0, 10));
-		plateau.add(restart, posElement(1, 4, 1, 1, 10, 20, "REMAINDER", true, "FIRST_LINE_START"));
-		plateau.add(labelReponse, posElement(0, 3, 1, 1, 10, 10, "REMAINDER", true, "PAGE_START"));
+		plateau.add(answer, posElement(0, 3, 1, 1, 10, 10, "REMAINDER"));
+		plateau.add(ans, posElement(0, 5, 1, 1, 10, 20, "", true, "FIRST_LINE_END", true, 0, 0, 0, 10));
+		plateau.add(restart, posElement(1, 5, 1, 1, 10, 20, "REMAINDER", true, "FIRST_LINE_START"));
+		plateau.add(labelReponse, posElement(0, 4, 1, 1, 10, 10, "REMAINDER", true, "PAGE_START"));
+		plateau.add(labelIndice, posElement(0, 2, 1, 1, 10, 10, "REMAINDER"));
 
 	}
 
-	public JPanel defNetwork() {
+	private JPanel defNetwork() {
 		JPanel network = new JPanel();
 		network.setBackground(Color.lightGray);
 		network.setLayout(new GridBagLayout());
@@ -180,9 +184,9 @@ public class Fenetre extends JFrame implements ActionListener {
 	}
 
 	private void defOnline() {
-		
+
 	}
-	
+
 	private GridBagConstraints posElement(int posX, int posY, int gridHeight, int gridWidth, int WeightX, int WeightY,
 			String EndLine, boolean Anchor, String posAnchor, boolean Inset, int InsetTop, int InsetLeft,
 			int InsetBottom, int InsetRight) {
@@ -198,11 +202,11 @@ public class Fenetre extends JFrame implements ActionListener {
 		case "REMAINDER":
 			pos.gridwidth = GridBagConstraints.REMAINDER;
 			break;
-		
+
 		case "RELATIVE":
 			pos.gridwidth = GridBagConstraints.RELATIVE;
 			break;
-			
+
 		default:
 			break;
 		}
@@ -265,7 +269,7 @@ public class Fenetre extends JFrame implements ActionListener {
 			String EndLine) {
 		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY, EndLine, false, "");
 	}
-	
+
 	private GridBagConstraints posElement(int posX, int posY, int gridHeight, int gridWidth, int WeightX, int WeightY) {
 		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY, "");
 	}
@@ -283,67 +287,80 @@ public class Fenetre extends JFrame implements ActionListener {
 			label1.setText("Devinez le nombre magique");
 			plateau.validate();
 		} else if (source == play) {
+			boolean play = true;
 			try {
-			if (nb_coup.isVisible()) {
+				if (nb_coup.isVisible()) {
+					switch (isMode) {
+					case "nb":
+						jeuNB.setCoup(Integer.parseInt(nb_coup.getText()));
+						break;
+					case "mot":
+						jeuMots.setCoup(Integer.parseInt(nb_coup.getText()));
+						break;
+					default:
+						break;
+					}
+				} else {
+					switch (isMode) {
+					case "nb":
+						jeuNB.setIllimite();
+						break;
+					case "mot":
+						jeuMots.setIllimite();
+						break;
+					default:
+						break;
+					}
+				}
+				if (nb_magique.isVisible()) {
+					switch (isMode) {
+					case "nb":
+						jeuNB.setNB(Integer.parseInt(new String(nb_magique.getPassword())));
+						break;
+					case "mot":
+						if ((answer.getText()).matches("^[A-Za-z, ]++$")) {
+							jeuMots.setMot(new String(nb_magique.getPassword()));
+							mode.remove(error);
+							mode.validate();
+							play = true;
+						} else {
+							error.setText("Mot Magique vide");
+							mode.add(error, posElement(1, 1, 1, 1, 10, 10));
+							mode.validate();
+							play = false;
+						}
+						break;
+					default:
+						break;
+					}
+				} else {
+					switch (isMode) {
+					case "nb":
+						jeuNB.setNB(jeuNB.rand_val());
+						break;
+					case "mot":
+						jeuMots.setMot(jeuMots.rand_word());
+						break;
+					default:
+						break;
+					}
+				}
 				switch (isMode) {
 				case "nb":
-					jeuNB.setCoup(Integer.parseInt(nb_coup.getText()));
+					jeuNB.getInfo();
 					break;
 				case "mot":
-					jeuMots.setCoup(Integer.parseInt(nb_coup.getText()));
+					jeuMots.getInfo();
 					break;
 				default:
 					break;
 				}
-			} else {
-				switch (isMode) {
-				case "nb":
-					jeuNB.setIllimite();
-					break;
-				case "mot":
-					jeuMots.setIllimite();
-					break;
-				default:
-					break;
+				nb_coup.setText("");
+				nb_magique.setText("");
+				plateau.validate();
+				if (play) {
+					cl.show(content, listContent[4]);
 				}
-			}
-			if (nb_magique.isVisible()) {
-				switch (isMode) {
-				case "nb":
-					jeuNB.setNB(Integer.parseInt(new String(nb_magique.getPassword())));
-					break;
-				case "mot":
-					jeuMots.setMot(new String(nb_magique.getPassword()));
-					break;
-				default:
-					break;
-				}
-			} else {
-				switch (isMode) {
-				case "nb":
-					jeuNB.setNB(jeuNB.rand_val());
-					break;
-				case "mot":
-					jeuMots.setMot(jeuMots.rand_word());
-					break;
-				default:
-					break;
-				}
-			}
-			switch (isMode) {
-			case "nb":
-				jeuNB.getInfo();
-				break;
-			case "mot":
-				jeuMots.getInfo();
-				break;
-			default:
-				break;
-			}
-			nb_coup.setText("");
-			nb_magique.setText("");
-			plateau.validate();
-			cl.show(content, listContent[4]);
 			} catch (Exception e2) {
 				mode.add(error, posElement(1, 1, 1, 1, 10, 10));
 				mode.validate();
@@ -362,12 +379,22 @@ public class Fenetre extends JFrame implements ActionListener {
 		} else if (source == solo) {
 			cl.show(content, listContent[1]);
 			this.nb_magique.setVisible(false);
-			this.info_nb.setVisible(false);
+			this.info_val.setVisible(false);
 			this.mode.validate();
 		} else if (source == multi) {
 			cl.show(content, listContent[1]);
 			this.nb_magique.setVisible(true);
-			this.info_nb.setVisible(true);
+			this.info_val.setVisible(true);
+			switch (isMode) {
+			case "nb":
+				info_val.setText("Nombre Magique");
+				break;
+			case "mot":
+				info_val.setText("Mot Magique");
+				break;
+			default:
+				break;
+			}
 			this.mode.validate();
 		} else if (source == ans) {
 			switch (isMode) {
@@ -376,7 +403,7 @@ public class Fenetre extends JFrame implements ActionListener {
 				jeuNB.start();
 				break;
 			case "mot":
-				jeuMots.sendWord();
+				jeuMots.sendValue();
 				jeuMots.start();
 				break;
 			default:
@@ -400,6 +427,8 @@ public class Fenetre extends JFrame implements ActionListener {
 			mode.validate();
 			cl.show(content, listContent[1]);
 		} else if (source == toMenu) {
+			error.setVisible(false);
+			mode.validate();
 			cl.show(content, listContent[0]);
 		} else if (source == close) {
 			this.dispose();

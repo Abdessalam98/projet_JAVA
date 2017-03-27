@@ -32,7 +32,7 @@ class Mode {
 	
 	protected void getInfo() {
 		if (coupIllimite) {
-			labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste × essai(s)");				
+			labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste \u221E essai(s)");				
 		} else {
 			labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste " + (this.cp_essai) + " essai(s)");
 		}

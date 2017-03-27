@@ -33,7 +33,7 @@ public class Numbers extends Mode {
 			this.cp_essai--;
 			this.coup_init++;
 			if (coupIllimite) {
-				labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste × essai(s)");				
+				labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste \u221E essai(s)");				
 			} else {
 				labelInfo.setText("Essai n° " + this.coup_init + "\n Il vous reste " + (this.cp_essai) + " essai(s)");
 			}
@@ -71,16 +71,3 @@ public class Numbers extends Mode {
 		labelReponse.setText("");
 	}
 }
-
-/*
- * 
- * 
- * public static void main(String[] args) { Numbers jeu=new Numbers();
- * jeu.rand_val(); System.out.println(
- * "Le nombre magique est compris entre 1 et 100"); jeu.start();
- * 
- * }
- * 
- * 
- * }
- */
