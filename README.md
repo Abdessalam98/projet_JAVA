@@ -16,3 +16,9 @@
 2. Dézipper le fichier
 3. Dans Eclipse, créez un nouveau projet 
 ![Step1](Steps/1.png)
+4. 
+![Step1](Steps/2.png)
+5. 
+![Step1](Steps/3.png)
+6. 
+![Step1](Steps/4.png)
