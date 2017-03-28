@@ -13,3 +13,6 @@
 - Gauthier De Backer
 ## Récuperer le projet fourni
 1- Téléchargez le fichier [code_source.zip](https://github.com/Laurent-PANEK/projet_JAVA/tree/master/Code_Source)
+2- Dézipper le fichier
+3- Dans Eclipse, créez un nouveau projet 
+![Step1](Steps/Step1.png)
