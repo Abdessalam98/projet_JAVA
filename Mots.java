@@ -19,9 +19,6 @@ public class Mots extends Mode {
 			"s", "t", "u", "v", "w", "x", "y", "z" };
 	int i = 0;
 	int length;
-	int coups_total = 10;
-	int coup_init = 1;
-	int cp_essai = coups_total;
 	String letter_rand;
 	String motADeviner;
 	String[] characters;
@@ -45,10 +42,9 @@ public class Mots extends Mode {
 	}
 
 	public void setMot(String value) {
-		if ((answer.getText()).matches("^[A-Za-z, ]++$")) {
-			this.motADeviner = value;
-			this.length = motADeviner.length();
-		}
+		this.motADeviner = value;
+		this.length = motADeviner.length();
+
 	}
 
 	/**
@@ -58,8 +54,7 @@ public class Mots extends Mode {
 		Random letter = new Random();
 		int select = letter.nextInt(alphabets.length);
 		this.letter_rand = alphabets[select];
-		this.motADeviner += this.letter_rand;
-		this.characters = (this.motADeviner).split("");
+		this.characters = (this.motADeviner + this.letter_rand).split("");
 	}
 
 	/**
@@ -100,7 +95,6 @@ public class Mots extends Mode {
 	 */
 	public void start() {
 		if ((this.coup_total >= this.coup_init || this.coupIllimite == true) && verif == true) {
-			this.add_array();
 			this.cp_essai--;
 			this.coup_init++;
 			if (coupIllimite) {
@@ -110,12 +104,13 @@ public class Mots extends Mode {
 			}
 			if (word_chosen.equals(this.motADeviner)) {
 				labelReponse.setText("Bravo !!! Vous avez gagné");
-			} else if (this.cp_essai > 0) {
-				labelReponse.setText("Ce n'est pas le bon mot. Réessayer !");
-			} else if (this.cp_essai == 0) {
-				labelReponse.setText("Vous avez perdu \n Le mot magique était " + this.motADeviner);
+			} else if (!word_chosen.equals(this.motADeviner)) {
+				if (this.cp_essai == 0) {
+					labelReponse.setText("Vous avez perdu ! \n Le mot magique était " + this.motADeviner);
+				} else {
+					labelReponse.setText("Ce n'est pas le bon mot. Réessayer !");
+				}
 			}
-
 		}
 	}
 
