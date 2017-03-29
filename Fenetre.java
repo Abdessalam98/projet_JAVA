@@ -1,7 +1,6 @@
 package com.classe;
 
 import java.awt.BorderLayout;
-
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,31 +11,34 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Socket;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import com.classe.Numbers;
 
+/**
+ * 
+ * Nom du fichier: Fenetre.java Date: 28 mars 2017 Membres du Projet: Laurent
+ * Panek, Abdessamad Douhi Abdessalam Benharira, Branis Lamrani Chef de Projet:
+ * Branis Lamrani
+ */
 public class Fenetre extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	BufferedReader in;
-    PrintWriter out;
+	PrintWriter out;
 	private CardLayout cl = new CardLayout();
-	private String[] listContent = { "CARD_1", "CARD_2", "CARD_3", "CARD_4", "CARD_5" };
+	private String[] listContent = { "CARD_1", "CARD_2", "CARD_3", "CARD_4",
+			"CARD_5" };
 	private String isMode;
 	private JPanel content = new JPanel();
 	private JPanel menu = new JPanel();
@@ -59,7 +61,6 @@ public class Fenetre extends JFrame implements ActionListener {
 	private JTextField nb_coup = new JTextField(5);
 	private JTextField answer = new JTextField(20);
 	private JPasswordField val_magique = new JPasswordField(10);
-	private JTextArea messageArea = new JTextArea(8, 40);
 	private JLabel label1 = new JLabel("");
 	private JLabel labelInfo = new JLabel();
 	private JLabel labelReponse = new JLabel();
@@ -67,10 +68,14 @@ public class Fenetre extends JFrame implements ActionListener {
 	private JLabel info_val = new JLabel("");
 	private JLabel error = new JLabel("Vous devez entrer un nombre");
 	private JLabel background = new JLabel();
+	private JLabel background2 = new JLabel();
 	private Numbers jeuNB = new Numbers(answer, labelReponse, labelInfo);
-	private Mots jeuMots = new Mots(answer, labelReponse, labelInfo, labelIndice);
-	
-
+	private Mots jeuMots = new Mots(answer, labelReponse, labelInfo,
+			labelIndice);
+/**
+ * Cette méthode permet de définir la fenêtre et ses caractéristiques
+ * @throws IOException
+ */
 	public void defFenetre() throws IOException {
 
 		this.setTitle("Mot ou Nombre Magique");
@@ -84,16 +89,15 @@ public class Fenetre extends JFrame implements ActionListener {
 		close.addActionListener(this);
 
 		this.defPlateau();
-		this.defOnline();
 		this.defNetwork();
 		this.defMode();
 		this.defMenu();
 
 		boutonPane.add(toMenu);
 		boutonPane.add(close);
-		// On d�finit le layout
+		// On définit le layout
 		content.setLayout(cl);
-		// On ajoute les cartes � la pile avec un nom pour les retrouver
+		// On ajoute les cartes à la pile avec un nom pour les retrouver
 		content.add(this.menu, listContent[0]);
 		content.add(this.mode, listContent[1]);
 		content.add(this.network, listContent[2]);
@@ -104,29 +108,39 @@ public class Fenetre extends JFrame implements ActionListener {
 		add(boutonPane, BorderLayout.SOUTH);
 		this.setVisible(true);
 	}
-
+	/**
+	 * Cette méthode permet de définir le menu
+	 */
 	private void defMenu() {
 
 		menu.setLayout(new GridBagLayout());
 		menu.setPreferredSize(new Dimension(650, 550));
 
-		JLabel titre = new JLabel("Mot ou Nombre Magique");
-		menu.add(titre, posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "CENTER"));
-
-		// D�finition de l'action du bouton
+		JLabel titre = new JLabel("");
+		menu.add(titre,
+				posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "CENTER"));
+		// Définition de l'action du bouton
 		this.goNB.addActionListener(this);
-		// D�finition de l'action du bouton2
+		// Définition de l'action du bouton2
 		this.goMot.addActionListener(this);
 
-		menu.add(goNB, posElement(0, 1, 1, 1, 3, 10, "", true, "FIRST_LINE_END", true, 0, 0, 0, 10));
+		menu.add(
+				goNB,
+				posElement(0, 1, 1, 1, 3, 10, "", true, "FIRST_LINE_END", true,
+						0, 0, 0, 10));
 
-		menu.add(goMot, posElement(1, 1, 1, 1, 3, 10, "REMAINDER", true, "FIRST_LINE_START"));
+		menu.add(
+				goMot,
+				posElement(1, 1, 1, 1, 3, 10, "REMAINDER", true,
+						"FIRST_LINE_START"));
 
-		this.background.setIcon(new ImageIcon("image\\menujava.png"));
+		this.background.setIcon(new ImageIcon("Image/menujava1.png"));
 		menu.add(background, posElement(0, 0, 0, 0, 0, 0));
-
 	}
+/**, posElement(0, 0, 0, 0, 0, 0));
 
+ * Cette méthode permet de définir le Mode
+ */
 	private void defMode() {
 		mode.setLayout(new GridBagLayout());
 		mode.setPreferredSize(new Dimension(650, 550));
@@ -146,15 +160,32 @@ public class Fenetre extends JFrame implements ActionListener {
 		this.val_magique.setVisible(false);
 		info_val.setVisible(false);
 		info_val.setForeground(Color.black);
-		this.mode.add(val_magique, posElement(1, 2, 1, 1, 10, 10, "REMAINDER", true, "FIRST_LINE_START"));
-		this.mode.add(info_val, posElement(0, 2, 1, 1, 10, 10, "", true, "FIRST_LINE_END", true, 0, 0, 0, 10));
+		this.mode.add(
+				val_magique,
+				posElement(1, 2, 1, 1, 10, 10, "REMAINDER", true,
+						"FIRST_LINE_START"));
+		this.mode.add(
+				info_val,
+				posElement(0, 2, 1, 1, 10, 10, "", true, "FIRST_LINE_END",
+						true, 0, 0, 0, 10));
 
-		this.mode.add(this.infinite_chance, posElement(0, 0, 1, 1, 10, 10, "", false, "", true, 0, 0, 0, 10));
-		this.mode.add(this.fixed_chance, posElement(1, 0, 1, 1, 10, 10, "REMAINDER", false, ""));
-		this.mode.add(nb_coup, posElement(1, 1, 1, 1, 10, 10, "REMAINDER", true, "PAGE_START", true, 10, 0, 0, 0));
-		this.mode.add(play, posElement(0, 3, 1, 1, 10, 10, "REMAINDER", true, "CENTER"));
-
+		this.mode
+				.add(this.infinite_chance,
+						posElement(0, 0, 1, 1, 10, 10, "", false, "", true, 0,
+								0, 0, 10));
+		this.mode.add(this.fixed_chance,
+				posElement(1, 0, 1, 1, 10, 10, "REMAINDER", false, ""));
+		this.mode.add(
+				nb_coup,
+				posElement(1, 1, 1, 1, 10, 10, "REMAINDER", true, "PAGE_START",
+						true, 10, 0, 0, 0));
+		this.mode.add(play,
+				posElement(0, 3, 1, 1, 10, 10, "REMAINDER", true, "CENTER"));
+		
 	}
+	/**
+	 * Cette méthode permet de définir le plateau
+	 */
 
 	private void defPlateau() {
 		plateau.setLayout(new GridBagLayout());
@@ -164,61 +195,71 @@ public class Fenetre extends JFrame implements ActionListener {
 		restart.addActionListener(this);
 		answer.addActionListener(this);
 
-		plateau.add(labelInfo, posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "PAGE_END"));
+		plateau.add(labelInfo,
+				posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "PAGE_END"));
 		plateau.add(answer, posElement(0, 3, 1, 1, 10, 10, "REMAINDER"));
-		plateau.add(ans, posElement(0, 5, 1, 1, 10, 20, "", true, "FIRST_LINE_END", true, 0, 0, 0, 10));
-		plateau.add(restart, posElement(1, 5, 1, 1, 10, 20, "REMAINDER", true, "FIRST_LINE_START"));
-		plateau.add(labelReponse, posElement(0, 4, 1, 1, 10, 10, "REMAINDER", true, "PAGE_START"));
+		plateau.add(
+				ans,
+				posElement(0, 5, 1, 1, 10, 20, "", true, "FIRST_LINE_END",
+						true, 0, 0, 0, 10));
+		plateau.add(
+				restart,
+				posElement(1, 5, 1, 1, 10, 20, "REMAINDER", true,
+						"FIRST_LINE_START"));
+		plateau.add(labelReponse,
+				posElement(0, 4, 1, 1, 10, 10, "REMAINDER", true, "PAGE_START"));
 		plateau.add(labelIndice, posElement(0, 2, 1, 1, 10, 10, "REMAINDER"));
 
 	}
-
+	
+/**
+ * Cette méthode permet de définir le mode de jeu
+ */
 	private void defNetwork() {
 		network.setLayout(new GridBagLayout());
 		network.setPreferredSize(new Dimension(650, 550));
 
-		JLabel text = new JLabel("Mode de jeu :");
-		network.add(text, posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "CENTER"));
+		JLabel text = new JLabel("");
+		network.add(text,
+				posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "CENTER"));
 
 		solo.addActionListener(this);
 		multi.addActionListener(this);
 		online.addActionListener(this);
 
-		network.add(solo, posElement(0, 1, 1, 1, 55, 10, "", true, "FIRST_LINE_END"));
-		network.add(multi, posElement(1, 1, 1, 1, 5, 10, "", true, "PAGE_START"));
-		network.add(online, posElement(2, 1, 1, 1, 55, 10, "REMAINDER", true, "FIRST_LINE_START"));
+		network.add(solo,
+				posElement(0, 1, 1, 1, 55, 10, "", true, "FIRST_LINE_END"));
+		network.add(multi,
+				posElement(1, 1, 1, 1, 5, 10, "", true, "PAGE_START"));
+		network.add(
+				online,
+				posElement(2, 1, 1, 1, 55, 10, "REMAINDER", true,
+						"FIRST_LINE_START"));
+		this.background2.setIcon(new ImageIcon("Image/menujava2.png"));
+	network.add(background2, posElement(0, 0, 0, 0, 0, 0));
 	}
-
-	/**
-	 * Prompt for and return the address of the server.
-	 */
-	private String getServerAddress() {
-		return JOptionPane.showInputDialog(
-				this,
-				"Enter IP Address of the Server:",
-				"Welcome to the Chatter",
-				JOptionPane.QUESTION_MESSAGE);
-	}
-	
-	/**
-	 * Prompt for and return the desired screen name.
-	 */
-	private String getNameServ() {
-		return JOptionPane.showInputDialog(
-				this,
-				"Choose a screen name:",
-				"Screen name selection",
-				JOptionPane.PLAIN_MESSAGE);
-	}
-	private void defOnline() throws IOException {
-
-	        
-	    }
-	
-
-	private GridBagConstraints posElement(int posX, int posY, int gridHeight, int gridWidth, int WeightX, int WeightY,
-			String EndLine, boolean Anchor, String posAnchor, boolean Inset, int InsetTop, int InsetLeft,
-			int InsetBottom, int InsetRight) {
+/**
+ * Gestion de positions des éléments
+ * @param posX
+ * @param posY
+ * @param gridHeight
+ * @param gridWidth
+ * @param WeightX
+ * @param WeightY
+ * @param EndLine
+ * @param Anchor
+ * @param posAnchor
+ * @param Inset
+ * @param InsetTop
+ * @param InsetLeft
+ * @param InsetBottom
+ * @param InsetRight
+ * @return position
+ */
+	private GridBagConstraints posElement(int posX, int posY, int gridHeight,
+			int gridWidth, int WeightX, int WeightY, String EndLine,
+			boolean Anchor, String posAnchor, boolean Inset, int InsetTop,
+			int InsetLeft, int InsetBottom, int InsetRight) {
 
 		GridBagConstraints pos = new GridBagConstraints();
 		pos.gridx = posX;
@@ -281,28 +322,35 @@ public class Fenetre extends JFrame implements ActionListener {
 				break;
 			}
 			if (Inset) {
-				pos.insets = new Insets(InsetTop, InsetLeft, InsetBottom, InsetRight);
+				pos.insets = new Insets(InsetTop, InsetLeft, InsetBottom,
+						InsetRight);
 			}
 
 		}
 		return pos;
 	}
 
-	private GridBagConstraints posElement(int posX, int posY, int gridHeight, int gridWidth, int WeightX, int WeightY,
-			String EndLine, boolean Anchor, String posAnchor) {
-		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY, EndLine, Anchor, posAnchor, false, 0, 0,
-				0, 0);
+	private GridBagConstraints posElement(int posX, int posY, int gridHeight,
+			int gridWidth, int WeightX, int WeightY, String EndLine,
+			boolean Anchor, String posAnchor) {
+		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY,
+				EndLine, Anchor, posAnchor, false, 0, 0, 0, 0);
 	}
 
-	private GridBagConstraints posElement(int posX, int posY, int gridHeight, int gridWidth, int WeightX, int WeightY,
-			String EndLine) {
-		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY, EndLine, false, "");
+	private GridBagConstraints posElement(int posX, int posY, int gridHeight,
+			int gridWidth, int WeightX, int WeightY, String EndLine) {
+		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY,
+				EndLine, false, "");
 	}
 
-	private GridBagConstraints posElement(int posX, int posY, int gridHeight, int gridWidth, int WeightX, int WeightY) {
-		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY, "");
+	private GridBagConstraints posElement(int posX, int posY, int gridHeight,
+			int gridWidth, int WeightX, int WeightY) {
+		return posElement(posX, posY, gridHeight, gridWidth, WeightX, WeightY,
+				"");
 	}
-
+/**
+ * Gestion des actions
+ */
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == goMot) {
@@ -346,8 +394,10 @@ public class Fenetre extends JFrame implements ActionListener {
 				if (val_magique.isVisible()) {
 					switch (isMode) {
 					case "nb":
-						if (new String(val_magique.getPassword()).matches("^\\d+$")) {
-							jeuNB.setNB(Integer.parseInt(new String(val_magique.getPassword())));
+						if (new String(val_magique.getPassword())
+								.matches("^\\d+$")) {
+							jeuNB.setNB(Integer.parseInt(new String(val_magique
+									.getPassword())));
 							error.setVisible(false);
 							play = true;
 						} else {
@@ -358,7 +408,8 @@ public class Fenetre extends JFrame implements ActionListener {
 						}
 						break;
 					case "mot":
-						if (new String(val_magique.getPassword()).matches("^[A-Za-z, ]++$")) {
+						if (new String(val_magique.getPassword())
+								.matches("^[A-Za-z, ]++$")) {
 							jeuMots.setMot(new String(val_magique.getPassword()));
 							error.setVisible(false);
 							play = true;
