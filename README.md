@@ -35,5 +35,6 @@
 
 :exclamation: Attention pour visualiser les images. 
 Créez un dossier Image/ dans le dossier Jeu au niveau du Workspace
+en mettant les images contenues dans [Images](https://github.com/Laurent-PANEK/projet_JAVA/tree/master/Image)
 ![FixIssue](Steps/5.png)
 
