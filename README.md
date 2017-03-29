@@ -1,7 +1,8 @@
 # Projet JAVA
-## Groupe 5 (Nombre et Mot Magique)
 
 ![Icon](Image/Icon.png)
+
+## Groupe 5 (Nombre et Mot Magique)
 
 **Membres du projet:**
 - Laurent Panek
