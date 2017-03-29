@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -27,9 +28,12 @@ import com.classe.Numbers;
 
 /**
  * 
- * Nom du fichier: Fenetre.java Date: 28 mars 2017 Membres du Projet: Laurent
- * Panek, Abdessamad Douhi Abdessalam Benharira, Branis Lamrani Chef de Projet:
- * Branis Lamrani
+ * Nom du fichier: Fenetre.java 
+ * Date: 29 mars 2017
+ * Membres du Projet:
+ * Laurent Panek, Abdessamad Douhi
+ * Abdessalam Benharira, Branis Lamrani
+ * Chef de Projet: Branis Lamrani
  */
 public class Fenetre extends JFrame implements ActionListener {
 
@@ -63,6 +67,7 @@ public class Fenetre extends JFrame implements ActionListener {
 	private JPasswordField val_magique = new JPasswordField(10);
 	private JLabel label1 = new JLabel("");
 	private JLabel labelInfo = new JLabel();
+	
 	private JLabel labelReponse = new JLabel();
 	private JLabel labelIndice = new JLabel();
 	private JLabel info_val = new JLabel("");
@@ -84,7 +89,6 @@ public class Fenetre extends JFrame implements ActionListener {
 		this.setLocationRelativeTo(null);
 
 		JPanel boutonPane = new JPanel();
-
 		toMenu.addActionListener(this);
 		close.addActionListener(this);
 
@@ -119,11 +123,10 @@ public class Fenetre extends JFrame implements ActionListener {
 		JLabel titre = new JLabel("");
 		menu.add(titre,
 				posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "CENTER"));
-		// Définition de l'action du bouton
+		// Définition de l'action du boutonthis.background.setIcon(new ImageIcon("Image/menujava1.png"));
 		this.goNB.addActionListener(this);
 		// Définition de l'action du bouton2
 		this.goMot.addActionListener(this);
-
 		menu.add(
 				goNB,
 				posElement(0, 1, 1, 1, 3, 10, "", true, "FIRST_LINE_END", true,
@@ -150,13 +153,18 @@ public class Fenetre extends JFrame implements ActionListener {
 		ButtonGroup group = new ButtonGroup();
 
 		group.add(this.infinite_chance);
-		group.add(this.fixed_chance);
+		group.add(this.fixed_chance);this.infinite_chance.setFont(new Font("",Font.PLAIN,20));
 
 		this.infinite_chance.setSelected(true);
+		this.infinite_chance.setFont(new Font("",Font.PLAIN,20));
+		this.infinite_chance.setForeground(Color.red);
 		this.infinite_chance.addActionListener(this);
+		this.fixed_chance.setForeground(Color.ORANGE);
+		this.fixed_chance.setFont(new Font("",Font.PLAIN,20));
 		this.fixed_chance.addActionListener(this);
 
 		this.nb_coup.setVisible(false);
+		this.nb_coup.setText("10");
 		this.val_magique.setVisible(false);
 		info_val.setVisible(false);
 		info_val.setForeground(Color.black);
@@ -188,13 +196,15 @@ public class Fenetre extends JFrame implements ActionListener {
 	 */
 
 	private void defPlateau() {
-		plateau.setLayout(new GridBagLayout());
-		plateau.setPreferredSize(new Dimension(650, 550));
-
 		ans.addActionListener(this);
 		restart.addActionListener(this);
 		answer.addActionListener(this);
+		plateau.setLayout(new GridBagLayout());
+		plateau.setPreferredSize(new Dimension(650, 550));
 
+		
+
+		labelInfo.setFont(new Font("",Font.PLAIN,20));
 		plateau.add(labelInfo,
 				posElement(0, 0, 1, 1, 10, 10, "REMAINDER", true, "PAGE_END"));
 		plateau.add(answer, posElement(0, 3, 1, 1, 10, 10, "REMAINDER"));
@@ -206,10 +216,11 @@ public class Fenetre extends JFrame implements ActionListener {
 				restart,
 				posElement(1, 5, 1, 1, 10, 20, "REMAINDER", true,
 						"FIRST_LINE_START"));
+		labelReponse.setFont(new Font("",Font.PLAIN,20));
 		plateau.add(labelReponse,
 				posElement(0, 4, 1, 1, 10, 10, "REMAINDER", true, "PAGE_START"));
+		labelIndice.setFont(new Font("",Font.PLAIN,20));
 		plateau.add(labelIndice, posElement(0, 2, 1, 1, 10, 10, "REMAINDER"));
-
 	}
 	
 /**
@@ -281,6 +292,7 @@ public class Fenetre extends JFrame implements ActionListener {
 			break;
 		}
 		if (Anchor) {
+			
 			switch (posAnchor) {
 			case "PAGE_START":
 				pos.anchor = GridBagConstraints.PAGE_START;
