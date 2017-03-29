@@ -8,23 +8,30 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.Socket;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import com.classe.Numbers;
+
 
 /**
  * 
@@ -60,6 +67,10 @@ public class Fenetre extends JFrame implements ActionListener {
 	private JButton online = new JButton("Online");
 	private JButton toMenu = new JButton("Menu");
 	private JButton close = new JButton("Fermer");
+	private JButton refresh = new JButton("Actualiser");
+	private JButton send = new JButton("Envoyer");
+	private DefaultListModel<String> listModel = new DefaultListModel<String>();
+	private JList<String> messageArea = new JList<String>(listModel);
 	private JRadioButton infinite_chance = new JRadioButton("Coup Infini");
 	private JRadioButton fixed_chance = new JRadioButton("Coup maximum");
 	private JTextField nb_coup = new JTextField(5);
@@ -75,8 +86,8 @@ public class Fenetre extends JFrame implements ActionListener {
 	private JLabel background = new JLabel();
 	private JLabel background2 = new JLabel();
 	private Numbers jeuNB = new Numbers(answer, labelReponse, labelInfo);
-	private Mots jeuMots = new Mots(answer, labelReponse, labelInfo,
-			labelIndice);
+	private Mots jeuMots = new Mots(answer, labelReponse, labelInfo, labelIndice);
+	private Socket socket;
 /**
  * Cette méthode permet de définir la fenêtre et ses caractéristiques
  * @throws IOException
@@ -84,6 +95,7 @@ public class Fenetre extends JFrame implements ActionListener {
 	public void defFenetre() throws IOException {
 
 		this.setTitle("Mot ou Nombre Magique");
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage("Image/Icon.png"));
 		this.setSize(650, 550);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -95,6 +107,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		this.defPlateau();
 		this.defNetwork();
 		this.defMode();
+		this.defOnline();
 		this.defMenu();
 
 		boutonPane.add(toMenu);
@@ -249,7 +262,74 @@ public class Fenetre extends JFrame implements ActionListener {
 		this.background2.setIcon(new ImageIcon("Image/menujava2.png"));
 	network.add(background2, posElement(0, 0, 0, 0, 0, 0));
 	}
-/**
+
+	private void defOnline() {
+		onlinePanel.setLayout(new GridBagLayout());
+		onlinePanel.setPreferredSize(new Dimension(650, 550));
+		
+		refresh.addActionListener(this);
+		send.addActionListener(this);
+		
+		JLabel info = new JLabel("Utilisateur connecté");
+		onlinePanel.add(info, posElement(0, 0, 1, 1, 10, 5, "REMAINDER"));
+		onlinePanel.add(messageArea, posElement(0, 1, 1, 1, 10, 10, "REMAINDER"));
+		onlinePanel.add(send, posElement(0, 2, 1, 1, 10, 5, "REMAINDER"));
+		onlinePanel.add(refresh, posElement(0, 3, 1, 1, 10, 10, "REMAINDER"));
+	}
+	/**
+     * Prompt for and return the address of the server.
+     */
+    private String getServerAddress() {
+        return JOptionPane.showInputDialog(
+            this,
+            "Enter IP Address of the Server:",
+            "Welcome to the Chatter",
+            JOptionPane.QUESTION_MESSAGE);
+    }
+
+    /**
+     * Prompt for and return the desired screen name.
+     */
+    private String getNameServ() {
+        return JOptionPane.showInputDialog(
+            this,
+            "Choose a screen name:",
+            "Screen name selection",
+            JOptionPane.PLAIN_MESSAGE);
+    }
+
+    /**
+     * Connects to the server then enters the processing loop.
+     */
+    private void run() throws IOException {
+
+        // Make connection and initialize streams
+        String serverAddress = getServerAddress();
+        socket = new Socket(serverAddress, 9001);
+        in = new BufferedReader(new InputStreamReader(
+            socket.getInputStream()));
+        out = new PrintWriter(socket.getOutputStream(), true);
+
+        // Process all messages from server, according to the protocol.
+        while (true) {
+            String line = in.readLine();
+            if (line == null) {
+				System.out.println("error input null");
+				break;
+			} else if (line.startsWith("SUBMITNAME")) {
+                out.println(getNameServ());
+            } else if (line.startsWith("CONNECTED")) {
+            	System.out.println(line);
+            	listModel.addElement(line.substring(9));
+            	messageArea.setModel(listModel);
+            	onlinePanel.validate();
+            } else if (line.startsWith("CLOSE")) {
+            	break;
+            }
+        }
+    }
+	
+	/**
  * Gestion de positions des éléments
  * @param posX
  * @param posY
@@ -532,11 +612,68 @@ public class Fenetre extends JFrame implements ActionListener {
 		} else if (source == toMenu) {
 			error.setVisible(false);
 			mode.validate();
+			listModel.clear();
+			messageArea.setModel(listModel);
+			onlinePanel.validate();
 			cl.show(content, listContent[0]);
 		} else if (source == close) {
 			this.dispose();
 		} else if (source == online) {
 			cl.show(content, listContent[3]);
-		}
+			try {
+				this.run();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}  else if (source == refresh) {
+			listModel.clear();
+			out.println("REFRESH");
+			while (true) {
+	            String line;
+				try {
+					line = in.readLine();
+					if (line == null) {
+						System.out.println("error input null");
+						break;
+					} else if (line.startsWith("SUBMITNAME")) {
+		                out.println(getNameServ());
+		            } else if (line.startsWith("CONNECTED")) {
+		            	System.out.println(line);
+		            	listModel.addElement(line.substring(9));
+		            	messageArea.setModel(listModel);
+		            	onlinePanel.validate();
+		            } else if (line.startsWith("CLOSE")) {
+		            	break;
+		            }
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	        }
+		} else if (source == send) {
+        	if(!messageArea.isSelectionEmpty()) {
+        		String[] infoUser = messageArea.getSelectedValue().split(" ");
+        		out.println("THREAD"+infoUser[1]);
+        		System.out.println("send ip");
+        		while (true) {
+    	            String line;
+    				try {
+    					line = in.readLine();
+    					if (line == null) {
+    						System.out.println("error input null");
+    						break;
+    					} else if (line.startsWith("ANSWER")) {
+    		            	System.out.println(line.substring(6));
+    		            } else if (line.startsWith("CLOSE")) {
+    		            	break;
+    		            }
+    				} catch (IOException e1) {
+    					// TODO Auto-generated catch block
+    					e1.printStackTrace();
+    				}
+    	        }
+        	}
+        }
 	}
 }
