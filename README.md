@@ -16,6 +16,7 @@
 - Urbain Nzouda
 - Gauthier De Backer
 ## Récuperer le projet fourni
+
 1. Téléchargez le fichier [code_source.zip](https://github.com/Laurent-PANEK/projet_JAVA/tree/master/Code_Source)
 
 2. Dézipper le fichier si nécessaire
@@ -31,3 +32,8 @@
 
 6. 
 ![Step1](Steps/4.png)
+
+:exclamation: Attention pour visualiser les images. 
+Créez un dossier Image/ dans le dossier Jeu au niveau du Workspace
+![FixIssue](Steps/5.png)
+
