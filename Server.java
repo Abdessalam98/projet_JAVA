@@ -64,6 +64,8 @@ public class Server {
                             }
                             out.println("CLOSE");
                             break;
+                        } else {
+                        	user.clear();
                         }
                     }
                 }
@@ -80,7 +82,7 @@ public class Server {
                         out.println("CLOSE");
                     }
                     if (input.startsWith("THREAD")) {
-                    	out.println("ANSWERVous etes connecté en tant que "+user.get(1));
+                    	out.println("ANSWERVous etes connectÃ© en tant que "+user.get(1));
                     	out.println("CLOSE");
                     }
                 }
